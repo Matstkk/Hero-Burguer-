@@ -260,18 +260,95 @@ footer{background:rgba(10,22,40,0.95);border-top:2px solid var(--red);padding:3r
 .page-title-section{text-align:center;margin-bottom:3rem;}
 .page-title-section h2{font-family:var(--font-hero);font-size:clamp(2rem,5vw,4rem);color:var(--yellow);letter-spacing:3px;text-shadow:3px 3px 0 var(--red);}
 .page-title-section p{color:var(--gray);margin-top:0.5rem;}
+/* HAMBURGER MENU ICON */
+.nav-hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px;z-index:601;}
+.nav-hamburger span{display:block;width:24px;height:2px;background:var(--yellow);border-radius:2px;transition:all 0.3s;}
+.nav-hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px);}
+.nav-hamburger.open span:nth-child(2){opacity:0;}
+.nav-hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px);}
+
+/* MOBILE DRAWER */
+.mobile-drawer{
+  position:fixed;inset:0;top:66px;
+  background:rgba(10,22,40,0.98);
+  backdrop-filter:blur(20px);
+  z-index:500;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2.5rem;
+  transform:translateX(100%);
+  transition:transform 0.35s cubic-bezier(0.22,1,0.36,1);
+}
+.mobile-drawer.open{transform:translateX(0);}
+.mobile-drawer a{
+  font-family:var(--font-hero);font-size:2.5rem;letter-spacing:3px;
+  color:var(--white);text-decoration:none;
+  transition:color 0.2s;
+}
+.mobile-drawer a:hover{color:var(--yellow);}
+
 @media(max-width:768px){
+  body{cursor:auto;}
+  .cursor,.cursor-dot{display:none;}
   nav{padding:1rem 1.5rem;}
   .nav-links{display:none;}
-  .hero-content{flex-direction:column;text-align:center;padding:5rem 1.5rem 2rem;}
-  .hero-carousel{height:320px;}
-  .carousel-ring{width:280px;height:280px;}
-  .carousel-prev{left:-40px;}
-  .carousel-next{right:-40px;}
-  .detail-grid,.cart-grid,.checkout-grid{grid-template-columns:1fr;}
-  section,.page{padding:5rem 1.5rem 3rem;}
-  #page-menu{padding:5rem 1.5rem 3rem;}
+  .nav-hamburger{display:flex;}
+  .nav-cart{font-size:0.75rem;padding:5px 12px !important;}
+
+  .hero-content{flex-direction:column;text-align:center;padding:5rem 1.2rem 2rem;gap:1.5rem;}
+  .hero-text{order:1;}
+  .hero-carousel{order:2;height:280px;width:100%;}
+  .carousel-ring{width:240px;height:240px;}
+  .carousel-prev{left:-32px;width:36px;height:36px;font-size:1rem;}
+  .carousel-next{right:-32px;width:36px;height:36px;font-size:1rem;}
+  .carousel-badge{font-size:0.75rem;padding:5px 14px;}
+  .carousel-badge-name{font-size:1rem;}
+  .hero-btns{justify-content:center;}
+  .btn{padding:0.75rem 1.4rem;font-size:0.82rem;}
+
+  .menu-strip{font-size:0.85rem;}
+
+  #page-menu{padding:5rem 1rem 3rem;}
+  .menu-header h2{font-size:2rem;}
+  .hero-filter{gap:0.5rem;}
+  .filter-btn{padding:6px 14px;font-size:0.72rem;}
+  .burgers-grid{grid-template-columns:1fr;gap:1.2rem;padding:0 0.2rem;}
+  .burger-card-img{height:180px;}
+  .burger-hero-name{font-size:1.2rem;}
+  .burger-price{font-size:1.5rem;}
+
+  .detail-grid{grid-template-columns:1fr;gap:2rem;}
+  .detail-img-main{border-radius:12px;}
+  .detail-hero-emblem{width:60px;height:60px;font-size:1.5rem;top:-15px;right:-10px;}
+  .detail-name{font-size:2rem;}
+  section,.page{padding:5rem 1rem 3rem;}
+
+  .cart-grid{grid-template-columns:1fr;gap:1.5rem;}
+  .cart-item{flex-wrap:wrap;}
+  .cart-item-img{width:64px;height:64px;}
+  .cart-summary{position:static;}
+
+  .checkout-grid{grid-template-columns:1fr;}
   .form-row{grid-template-columns:1fr;}
+  .checkout-summary-card{position:static;}
+  .payment-methods{flex-wrap:wrap;}
+  .pay-method{flex:1;min-width:80px;text-align:center;padding:8px 10px;}
+
+  .stats-row{grid-template-columns:1fr 1fr;}
+  .stat-num{font-size:2rem;}
+
+  footer{padding:2rem 1.5rem;}
+  .footer-links{flex-wrap:wrap;gap:1rem;}
+  .contact-card{padding:2rem 1.2rem;}
+  .contact-links{flex-direction:column;align-items:center;}
+
+  #page-success{padding:5rem 1.5rem;}
+  .success-title{font-size:2.5rem;}
+}
+
+@media(max-width:400px){
+  .carousel-ring{width:200px;height:200px;}
+  h1.hero-title{font-size:2.8rem;}
+  .detail-name{font-size:1.6rem;}
+  .stats-row{grid-template-columns:1fr;}
 }
 </style>
 </head>
@@ -293,6 +370,13 @@ footer{background:rgba(10,22,40,0.95);border-top:2px solid var(--red);padding:3r
   <div class="toast-text"><strong id="toastName"></strong>Adicionado ao pedido!</div>
 </div>
 
+<!-- MOBILE DRAWER -->
+<div class="mobile-drawer" id="mobileDrawer">
+  <a href="#" onclick="goPage('home');closeDrawer();return false;">Início</a>
+  <a href="#" onclick="goPage('menu');closeDrawer();return false;">Cardápio</a>
+  <a href="#" onclick="goPage('cart');closeDrawer();return false;">🛒 Carrinho</a>
+</div>
+
 <!-- NAV -->
 <nav id="mainNav">
   <div class="nav-logo" onclick="goPage('home')">🍔 HERO BURGER</div>
@@ -302,9 +386,14 @@ footer{background:rgba(10,22,40,0.95);border-top:2px solid var(--red);padding:3r
     <li><a href="#" onclick="return false;">Combos</a></li>
     <li><a href="#" onclick="return false;">Sobre</a></li>
   </ul>
-  <div class="nav-cart btn btn-outline" onclick="goPage('cart')" style="padding:6px 16px;font-size:0.8rem;">
-    🛒 CARRINHO
-    <span class="cart-badge" id="cartBadge">0</span>
+  <div style="display:flex;align-items:center;gap:0.75rem;">
+    <div class="nav-cart btn btn-outline" onclick="goPage('cart')" style="padding:6px 16px;font-size:0.8rem;">
+      🛒 CARRINHO
+      <span class="cart-badge" id="cartBadge">0</span>
+    </div>
+    <div class="nav-hamburger" id="navHamburger" onclick="toggleDrawer()">
+      <span></span><span></span><span></span>
+    </div>
   </div>
 </nav>
 
@@ -944,21 +1033,42 @@ function goPage(page){
   }
 }
 
-// ===== CURSOR =====
-const cursor=document.getElementById('cursor');
-const dot=document.getElementById('cursorDot');
-let mx=0,my=0,cx=0,cy=0;
-document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;dot.style.left=mx+'px';dot.style.top=my+'px';});
-function animCursor(){
-  cx+=(mx-cx)*0.15;cy+=(my-cy)*0.15;
-  cursor.style.left=cx+'px';cursor.style.top=cy+'px';
-  requestAnimationFrame(animCursor);
+// ===== MOBILE DRAWER =====
+function toggleDrawer(){
+  const drawer=document.getElementById('mobileDrawer');
+  const ham=document.getElementById('navHamburger');
+  drawer.classList.toggle('open');
+  ham.classList.toggle('open');
 }
-animCursor();
-document.querySelectorAll('button,a,.burger-card,.project-card').forEach(el=>{
-  el.addEventListener('mouseenter',()=>{cursor.style.transform='translate(-50%,-50%) scale(2)';cursor.style.borderColor='var(--red)';});
-  el.addEventListener('mouseleave',()=>{cursor.style.transform='translate(-50%,-50%) scale(1)';cursor.style.borderColor='var(--yellow)';});
-});
+function closeDrawer(){
+  document.getElementById('mobileDrawer').classList.remove('open');
+  document.getElementById('navHamburger').classList.remove('open');
+}
+
+// ===== CURSOR (desktop only) =====
+const isTouchDevice = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
+if(!isTouchDevice){
+  const cursor=document.getElementById('cursor');
+  const dot=document.getElementById('cursorDot');
+  let mx=0,my=0,cx=0,cy=0;
+  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;dot.style.left=mx+'px';dot.style.top=my+'px';});
+  function animCursor(){
+    cx+=(mx-cx)*0.15;cy+=(my-cy)*0.15;
+    cursor.style.left=cx+'px';cursor.style.top=cy+'px';
+    requestAnimationFrame(animCursor);
+  }
+  animCursor();
+  document.querySelectorAll('button,a,.burger-card').forEach(el=>{
+    el.addEventListener('mouseenter',()=>{cursor.style.transform='translate(-50%,-50%) scale(2)';cursor.style.borderColor='var(--red)';});
+    el.addEventListener('mouseleave',()=>{cursor.style.transform='translate(-50%,-50%) scale(1)';cursor.style.borderColor='var(--yellow)';});
+  });
+} else {
+  document.body.style.cursor='auto';
+  const cursor=document.getElementById('cursor');
+  const dot=document.getElementById('cursorDot');
+  if(cursor) cursor.style.display='none';
+  if(dot) dot.style.display='none';
+}
 
 // ===== INIT =====
 window.addEventListener('load',()=>{
