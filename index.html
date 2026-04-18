@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HERO BURGER — Sabores do Universo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Oswald:wght@400;500;600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --red:#e63946;--yellow:#ffd60a;--blue:#1d3557;--darkblue:#0a1628;
+  --gold:#f4a261;--white:#f1faee;--gray:#a8dadc;
+  --font-hero:'Bangers',cursive;
+  --font-title:'Oswald',sans-serif;
+  --font-body:'Nunito',sans-serif;
+}
+html{scroll-behavior:smooth;}
+body{background:var(--darkblue);color:var(--white);font-family:var(--font-body);overflow-x:hidden;cursor:none;}
+
+/* CUSTOM CURSOR */
+.cursor{position:fixed;width:20px;height:20px;border:2px solid var(--yellow);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:all 0.1s ease;mix-blend-mode:difference;}
+.cursor-dot{position:fixed;width:6px;height:6px;background:var(--yellow);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);}
+
+/* LOADER */
+#loader{position:fixed;inset:0;background:var(--darkblue);z-index:9998;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.8s ease;}
+#loader.hidden{opacity:0;pointer-events:none;}
+.loader-logo{font-family:var(--font-hero);font-size:5rem;color:var(--yellow);letter-spacing:4px;animation:loaderPulse 0.8s ease-in-out infinite alternate;text-shadow:0 0 30px rgba(255,214,10,0.5);}
+.loader-sub{font-family:var(--font-title);color:var(--red);letter-spacing:6px;font-size:0.9rem;margin-top:0.5rem;}
+.loader-bar-wrap{width:200px;height:4px;background:rgba(255,255,255,0.1);border-radius:2px;margin-top:2rem;overflow:hidden;}
+.loader-bar{height:100%;background:linear-gradient(90deg,var(--red),var(--yellow));border-radius:2px;animation:loaderFill 1.8s ease forwards;}
+@keyframes loaderPulse{from{transform:scale(1);}to{transform:scale(1.05);}}
+@keyframes loaderFill{from{width:0;}to{width:100%;}}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:500;display:flex;justify-content:space-between;align-items:center;padding:1rem 3rem;background:rgba(10,22,40,0.92);backdrop-filter:blur(20px);border-bottom:2px solid var(--red);}
+.nav-logo{font-family:var(--font-hero);font-size:2rem;letter-spacing:2px;color:var(--yellow);text-shadow:2px 2px 0 var(--red);cursor:pointer;}
+.nav-links{display:flex;gap:2rem;list-style:none;}
+.nav-links a{color:var(--white);text-decoration:none;font-family:var(--font-title);font-size:0.85rem;letter-spacing:2px;text-transform:uppercase;font-weight:600;transition:color 0.2s;position:relative;}
+.nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;right:0;height:2px;background:var(--yellow);transform:scaleX(0);transition:transform 0.2s;}
+.nav-links a:hover{color:var(--yellow);}
+.nav-links a:hover::after{transform:scaleX(1);}
+.nav-cart{position:relative;cursor:pointer;}
+.cart-badge{position:absolute;top:-8px;right:-8px;background:var(--red);color:#fff;font-size:0.65rem;font-weight:700;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-title);}
+
+/* PAGES */
+.page{display:none;min-height:100vh;}
+.page.active{display:block;}
+
+/* ===== PAGE 1: HERO / HOME ===== */
+#page-home{position:relative;overflow:hidden;}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 60% 50%,#1a2a4a 0%,var(--darkblue) 70%);z-index:0;}
+.hero-particles{position:absolute;inset:0;overflow:hidden;z-index:1;}
+.particle{position:absolute;width:3px;height:3px;background:var(--yellow);border-radius:50%;animation:floatParticle linear infinite;}
+@keyframes floatParticle{0%{transform:translateY(100vh) rotate(0deg);opacity:0;}10%{opacity:1;}90%{opacity:1;}100%{transform:translateY(-100px) rotate(720deg);opacity:0;}}
+
+.hero-content{position:relative;z-index:10;min-height:100vh;display:flex;align-items:center;padding:6rem 3rem 3rem;max-width:1200px;margin:0 auto;gap:3rem;}
+.hero-text{flex:1;}
+.hero-badge{display:inline-block;background:var(--red);color:#fff;font-family:var(--font-title);font-size:0.75rem;letter-spacing:3px;text-transform:uppercase;padding:6px 16px;border-radius:2px;margin-bottom:1rem;animation:slideInLeft 0.6s ease 0.2s both;}
+h1.hero-title{font-family:var(--font-hero);font-size:clamp(3.5rem,8vw,7rem);line-height:0.9;letter-spacing:3px;margin-bottom:1rem;animation:slideInLeft 0.6s ease 0.4s both;}
+h1.hero-title .line1{display:block;color:var(--yellow);text-shadow:4px 4px 0 var(--red),-2px -2px 0 rgba(255,214,10,0.3);}
+h1.hero-title .line2{display:block;color:var(--white);-webkit-text-stroke:2px var(--red);}
+.hero-desc{font-size:1.05rem;color:var(--gray);line-height:1.7;max-width:460px;margin-bottom:2rem;animation:slideInLeft 0.6s ease 0.6s both;}
+.hero-btns{display:flex;gap:1rem;flex-wrap:wrap;animation:slideInLeft 0.6s ease 0.8s both;}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:0.9rem 2rem;border-radius:4px;font-family:var(--font-title);font-size:0.9rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border:none;transition:all 0.2s;position:relative;overflow:hidden;}
+.btn::before{content:'';position:absolute;inset:0;background:rgba(255,255,255,0.1);transform:translateX(-100%);transition:transform 0.3s;}
+.btn:hover::before{transform:translateX(0);}
+.btn-primary{background:var(--red);color:#fff;box-shadow:4px 4px 0 var(--yellow);}
+.btn-primary:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--yellow);}
+.btn-outline{background:transparent;color:var(--yellow);border:2px solid var(--yellow);}
+.btn-outline:hover{background:var(--yellow);color:var(--darkblue);}
+
+/* HERO CAROUSEL */
+.hero-carousel{flex:1;position:relative;height:500px;display:flex;align-items:center;justify-content:center;animation:fadeInRight 0.8s ease 0.5s both;}
+.carousel-ring{position:relative;width:420px;height:420px;}
+.carousel-main{width:100%;height:100%;border-radius:50%;border:3px solid rgba(255,214,10,0.3);position:relative;overflow:hidden;}
+.carousel-main img{width:100%;height:100%;object-fit:cover;border-radius:50%;transition:opacity 0.6s ease;}
+.carousel-glow{position:absolute;inset:-20px;border-radius:50%;background:radial-gradient(circle,rgba(255,214,10,0.15) 0%,transparent 70%);animation:glowPulse 3s ease-in-out infinite;}
+@keyframes glowPulse{0%,100%{transform:scale(1);opacity:0.7;}50%{transform:scale(1.05);opacity:1;}}
+.carousel-badge{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);background:rgba(10,22,40,0.95);border:2px solid var(--yellow);border-radius:30px;padding:8px 20px;text-align:center;white-space:nowrap;}
+.carousel-badge-name{font-family:var(--font-hero);font-size:1.3rem;color:var(--yellow);letter-spacing:2px;}
+.carousel-badge-price{font-family:var(--font-title);font-size:0.85rem;color:var(--red);font-weight:700;}
+.carousel-dots{position:absolute;bottom:-40px;left:50%;transform:translateX(-50%);display:flex;gap:8px;}
+.dot{width:10px;height:10px;border-radius:50%;border:2px solid var(--yellow);cursor:pointer;transition:all 0.2s;}
+.dot.active{background:var(--yellow);}
+.carousel-prev,.carousel-next{position:absolute;top:50%;transform:translateY(-50%);background:var(--red);border:none;color:#fff;width:44px;height:44px;border-radius:50%;cursor:pointer;font-size:1.2rem;font-weight:700;transition:all 0.2s;z-index:10;}
+.carousel-prev{left:-60px;}
+.carousel-next{right:-60px;}
+.carousel-prev:hover,.carousel-next:hover{background:var(--yellow);color:var(--darkblue);transform:translateY(-50%) scale(1.1);}
+
+/* SCROLL INDICATOR */
+.scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;z-index:10;animation:bounce 2s infinite;}
+.scroll-hint span{font-family:var(--font-title);font-size:0.7rem;letter-spacing:3px;color:var(--gray);}
+.scroll-arrow{width:24px;height:24px;border-right:2px solid var(--yellow);border-bottom:2px solid var(--yellow);transform:rotate(45deg);}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0);}50%{transform:translateX(-50%) translateY(8px);}}
+
+@keyframes slideInLeft{from{opacity:0;transform:translateX(-40px);}to{opacity:1;transform:translateX(0);}}
+@keyframes fadeInRight{from{opacity:0;transform:translateX(40px);}to{opacity:1;transform:translateX(0);}}
+
+/* ===== MENU STRIP ===== */
+.menu-strip{background:var(--red);padding:0.6rem 0;overflow:hidden;position:relative;z-index:10;}
+.strip-inner{display:flex;gap:3rem;animation:scrollStrip 20s linear infinite;white-space:nowrap;}
+.strip-item{font-family:var(--font-hero);font-size:1.1rem;letter-spacing:2px;color:var(--yellow);display:flex;align-items:center;gap:0.5rem;}
+@keyframes scrollStrip{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+
+/* ===== PAGE 2: CARDÁPIO ===== */
+#page-menu{padding:6rem 3rem 4rem;background:var(--darkblue);}
+.menu-header{text-align:center;margin-bottom:4rem;}
+.menu-header h2{font-family:var(--font-hero);font-size:clamp(2.5rem,6vw,5rem);color:var(--yellow);letter-spacing:4px;text-shadow:3px 3px 0 var(--red);}
+.menu-header p{color:var(--gray);font-size:1rem;margin-top:0.5rem;}
+
+.hero-filter{display:flex;justify-content:center;gap:1rem;flex-wrap:wrap;margin-bottom:3rem;}
+.filter-btn{padding:8px 20px;border-radius:30px;border:2px solid;font-family:var(--font-title);font-size:0.8rem;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;font-weight:600;}
+.filter-btn.all{border-color:var(--yellow);color:var(--yellow);background:transparent;}
+.filter-btn.all.active,.filter-btn.all:hover{background:var(--yellow);color:var(--darkblue);}
+.filter-btn.marvel{border-color:#e63946;color:#e63946;background:transparent;}
+.filter-btn.marvel.active,.filter-btn.marvel:hover{background:#e63946;color:#fff;}
+.filter-btn.dc{border-color:#4361ee;color:#4361ee;background:transparent;}
+.filter-btn.dc.active,.filter-btn.dc:hover{background:#4361ee;color:#fff;}
+
+.burgers-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:2rem;max-width:1200px;margin:0 auto;}
+.burger-card{background:var(--blue);border-radius:12px;overflow:hidden;border:2px solid rgba(255,255,255,0.06);transition:all 0.3s;cursor:pointer;position:relative;group:hover;}
+.burger-card:hover{transform:translateY(-8px);border-color:var(--yellow);box-shadow:0 20px 60px rgba(0,0,0,0.5),0 0 30px rgba(255,214,10,0.1);}
+.burger-card-img{height:220px;position:relative;overflow:hidden;}
+.burger-card-img img{width:100%;height:100%;object-fit:cover;transition:transform 0.5s ease;}
+.burger-card:hover .burger-card-img img{transform:scale(1.08);}
+.burger-hero-badge{position:absolute;top:12px;left:12px;padding:4px 12px;border-radius:30px;font-family:var(--font-title);font-size:0.7rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
+.badge-spidey{background:#e63946;color:#fff;}
+.badge-cap{background:#1d7ed8;color:#fff;}
+.badge-supes{background:#c1121f;color:#fff;}
+.badge-bats{background:#333;color:var(--yellow);}
+.badge-thor{background:#6a4c93;color:#fff;}
+.badge-hulk{background:#2d6a4f;color:#fff;}
+.badge-flash{background:#e85d04;color:#fff;}
+.badge-wonder{background:#a4133c;color:#fff;}
+.burger-card-body{padding:1.25rem;}
+.burger-hero-name{font-family:var(--font-hero);font-size:1.5rem;letter-spacing:1px;color:var(--yellow);margin-bottom:0.25rem;}
+.burger-desc{font-size:0.82rem;color:var(--gray);line-height:1.5;margin-bottom:1rem;}
+.burger-footer{display:flex;align-items:center;justify-content:space-between;}
+.burger-price{font-family:var(--font-hero);font-size:1.8rem;color:var(--white);}
+.burger-price small{font-family:var(--font-title);font-size:0.75rem;color:var(--gray);font-weight:400;}
+.add-btn{background:var(--red);color:#fff;border:none;padding:8px 18px;border-radius:6px;font-family:var(--font-title);font-size:0.8rem;font-weight:600;letter-spacing:1px;cursor:pointer;transition:all 0.2s;}
+.add-btn:hover{background:var(--yellow);color:var(--darkblue);transform:scale(1.05);}
+.burger-card .hover-overlay{position:absolute;inset:0;background:rgba(10,22,40,0.85);opacity:0;transition:opacity 0.3s;display:flex;align-items:center;justify-content:center;}
+.burger-card:hover .hover-overlay{opacity:1;}
+.hover-btn{background:var(--yellow);color:var(--darkblue);border:none;padding:12px 24px;border-radius:6px;font-family:var(--font-title);font-weight:700;font-size:0.9rem;letter-spacing:1px;cursor:pointer;transform:translateY(10px);transition:transform 0.3s;text-transform:uppercase;}
+.burger-card:hover .hover-btn{transform:translateY(0);}
+
+/* ===== PAGE 3: DETALHES DO BURGER ===== */
+#page-detail{padding:5rem 3rem;background:var(--darkblue);display:none;}
+#page-detail.active{display:block;}
+.detail-back{display:inline-flex;align-items:center;gap:8px;color:var(--yellow);font-family:var(--font-title);font-size:0.85rem;letter-spacing:2px;text-transform:uppercase;cursor:pointer;margin-bottom:2rem;border:none;background:none;transition:gap 0.2s;}
+.detail-back:hover{gap:14px;}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;max-width:1100px;margin:0 auto;}
+.detail-img-wrap{position:relative;}
+.detail-img-main{width:100%;border-radius:16px;border:3px solid var(--yellow);box-shadow:8px 8px 0 var(--red);transition:transform 0.3s;}
+.detail-img-main:hover{transform:scale(1.02);}
+.detail-hero-emblem{position:absolute;top:-20px;right:-20px;width:80px;height:80px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2rem;border:3px solid var(--yellow);animation:spin 8s linear infinite;}
+@keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+.detail-content{}
+.detail-universe{font-family:var(--font-title);font-size:0.75rem;letter-spacing:3px;text-transform:uppercase;color:var(--red);margin-bottom:0.5rem;}
+.detail-name{font-family:var(--font-hero);font-size:clamp(2.5rem,5vw,4rem);color:var(--yellow);letter-spacing:2px;text-shadow:3px 3px 0 var(--red);line-height:0.95;margin-bottom:1rem;}
+.detail-desc{color:var(--gray);line-height:1.7;margin-bottom:1.5rem;font-size:0.95rem;}
+.detail-ingredients{margin-bottom:1.5rem;}
+.detail-ingredients h4{font-family:var(--font-title);font-size:0.8rem;letter-spacing:2px;text-transform:uppercase;color:var(--yellow);margin-bottom:0.75rem;}
+.ingredient-list{display:flex;flex-wrap:wrap;gap:0.5rem;}
+.ingredient{padding:4px 12px;border-radius:20px;font-size:0.78rem;font-weight:600;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);color:var(--gray);}
+.detail-price-row{display:flex;align-items:center;gap:1.5rem;margin-bottom:1.5rem;}
+.detail-price{font-family:var(--font-hero);font-size:3rem;color:var(--white);line-height:1;}
+.detail-qty{display:flex;align-items:center;gap:12px;background:var(--blue);border-radius:8px;padding:8px 16px;}
+.qty-btn{background:none;border:none;color:var(--yellow);font-size:1.3rem;font-weight:700;cursor:pointer;width:28px;height:28px;display:flex;align-items:center;justify-content:center;transition:transform 0.2s;}
+.qty-btn:hover{transform:scale(1.3);}
+.qty-val{font-family:var(--font-title);font-weight:700;font-size:1.1rem;min-width:24px;text-align:center;}
+.detail-actions{display:flex;gap:1rem;}
+.power-meter{margin-bottom:1.5rem;}
+.power-meter h4{font-family:var(--font-title);font-size:0.75rem;letter-spacing:2px;text-transform:uppercase;color:var(--gray);margin-bottom:0.75rem;}
+.power-row{display:flex;align-items:center;gap:12px;margin-bottom:0.5rem;}
+.power-label{font-size:0.78rem;color:var(--gray);width:70px;font-family:var(--font-title);}
+.power-bar-bg{flex:1;height:6px;background:rgba(255,255,255,0.1);border-radius:3px;overflow:hidden;}
+.power-bar{height:100%;border-radius:3px;transition:width 1s ease;}
+
+/* ===== PAGE 4: CART ===== */
+#page-cart{padding:5rem 3rem;background:var(--darkblue);display:none;}
+#page-cart.active{display:block;}
+.cart-grid{display:grid;grid-template-columns:1fr 380px;gap:3rem;max-width:1100px;margin:0 auto;align-items:start;}
+.cart-items-list{display:flex;flex-direction:column;gap:1rem;}
+.cart-item{background:var(--blue);border-radius:12px;padding:1.25rem;display:flex;gap:1rem;align-items:center;border:1px solid rgba(255,255,255,0.06);transition:all 0.3s;animation:slideInCart 0.4s ease both;}
+@keyframes slideInCart{from{opacity:0;transform:translateX(-20px);}to{opacity:1;transform:translateX(0);}}
+.cart-item-img{width:80px;height:80px;border-radius:8px;object-fit:cover;flex-shrink:0;}
+.cart-item-info{flex:1;}
+.cart-item-name{font-family:var(--font-hero);font-size:1.2rem;color:var(--yellow);letter-spacing:1px;}
+.cart-item-price{font-family:var(--font-title);color:var(--gray);font-size:0.9rem;margin-top:4px;}
+.cart-item-qty{display:flex;align-items:center;gap:10px;margin-top:8px;}
+.cart-item-remove{background:none;border:1px solid rgba(230,57,70,0.4);color:var(--red);padding:4px 10px;border-radius:4px;cursor:pointer;font-size:0.75rem;font-family:var(--font-title);transition:all 0.2s;}
+.cart-item-remove:hover{background:var(--red);color:#fff;}
+.cart-summary{background:var(--blue);border-radius:16px;padding:2rem;border:2px solid rgba(255,214,10,0.2);position:sticky;top:5rem;}
+.cart-summary h3{font-family:var(--font-hero);font-size:1.8rem;color:var(--yellow);margin-bottom:1.5rem;letter-spacing:2px;}
+.summary-row{display:flex;justify-content:space-between;margin-bottom:1rem;font-family:var(--font-title);font-size:0.9rem;color:var(--gray);}
+.summary-row.total{font-size:1.1rem;color:var(--white);font-weight:700;padding-top:1rem;border-top:1px solid rgba(255,255,255,0.1);margin-top:0.5rem;}
+.coupon-row{display:flex;gap:0.5rem;margin:1rem 0;}
+.coupon-input{flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.15);color:var(--white);padding:8px 12px;border-radius:6px;font-family:var(--font-body);font-size:0.85rem;}
+.coupon-input::placeholder{color:rgba(255,255,255,0.3);}
+.coupon-btn{background:var(--red);color:#fff;border:none;padding:8px 14px;border-radius:6px;cursor:pointer;font-family:var(--font-title);font-size:0.8rem;font-weight:600;transition:background 0.2s;}
+.coupon-btn:hover{background:var(--yellow);color:var(--darkblue);}
+.empty-cart{text-align:center;padding:4rem 2rem;}
+.empty-cart-emoji{font-size:5rem;display:block;margin-bottom:1rem;}
+.empty-cart h3{font-family:var(--font-hero);font-size:2rem;color:var(--gray);margin-bottom:1rem;}
+
+/* ===== PAGE 5: CHECKOUT ===== */
+#page-checkout{padding:5rem 3rem;background:var(--darkblue);display:none;}
+#page-checkout.active{display:block;}
+.checkout-grid{display:grid;grid-template-columns:1fr 360px;gap:3rem;max-width:1100px;margin:0 auto;}
+.checkout-form h2{font-family:var(--font-hero);font-size:2.5rem;color:var(--yellow);letter-spacing:2px;margin-bottom:2rem;}
+.form-section{margin-bottom:2rem;}
+.form-section h3{font-family:var(--font-title);font-size:0.8rem;letter-spacing:3px;text-transform:uppercase;color:var(--red);margin-bottom:1rem;display:flex;align-items:center;gap:8px;}
+.form-section h3::after{content:'';flex:1;height:1px;background:rgba(255,255,255,0.1);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;}
+.form-row.single{grid-template-columns:1fr;}
+.form-group{display:flex;flex-direction:column;gap:6px;}
+.form-group label{font-family:var(--font-title);font-size:0.78rem;letter-spacing:1px;text-transform:uppercase;color:var(--gray);}
+.form-group input,.form-group select{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);color:var(--white);padding:10px 14px;border-radius:8px;font-family:var(--font-body);font-size:0.9rem;transition:border-color 0.2s;}
+.form-group input:focus,.form-group select:focus{outline:none;border-color:var(--yellow);}
+.form-group select option{background:var(--blue);color:var(--white);}
+.payment-methods{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1.5rem;}
+.pay-method{padding:10px 20px;border-radius:8px;border:2px solid rgba(255,255,255,0.12);cursor:pointer;font-family:var(--font-title);font-size:0.8rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;transition:all 0.2s;color:var(--gray);}
+.pay-method.active,.pay-method:hover{border-color:var(--yellow);color:var(--yellow);}
+.checkout-summary-card{background:var(--blue);border-radius:16px;padding:1.5rem;border:2px solid rgba(255,214,10,0.2);position:sticky;top:5rem;}
+.checkout-summary-card h3{font-family:var(--font-hero);font-size:1.5rem;color:var(--yellow);margin-bottom:1.25rem;}
+.checkout-items{display:flex;flex-direction:column;gap:0.75rem;margin-bottom:1.5rem;}
+.checkout-item{display:flex;justify-content:space-between;font-size:0.85rem;color:var(--gray);font-family:var(--font-title);}
+.checkout-item span:last-child{color:var(--white);font-weight:600;}
+
+/* ===== PAGE 6: SUCCESS ===== */
+#page-success{padding:5rem 3rem;background:var(--darkblue);display:none;text-align:center;}
+#page-success.active{display:block;}
+.success-icon{font-size:6rem;animation:successBounce 1s ease both;}
+@keyframes successBounce{0%{transform:scale(0);}60%{transform:scale(1.2);}80%{transform:scale(0.9);}100%{transform:scale(1);}}
+.success-title{font-family:var(--font-hero);font-size:4rem;color:var(--yellow);letter-spacing:4px;text-shadow:3px 3px 0 var(--red);margin:1.5rem 0 1rem;}
+.success-desc{color:var(--gray);font-size:1rem;max-width:500px;margin:0 auto 2rem;line-height:1.7;}
+.order-code{display:inline-block;background:var(--blue);border:2px solid var(--yellow);border-radius:8px;padding:12px 32px;font-family:var(--font-hero);font-size:2rem;color:var(--yellow);letter-spacing:4px;margin-bottom:2rem;}
+.confetti{position:fixed;pointer-events:none;z-index:1000;}
+
+/* ===== FOOTER ===== */
+footer{background:rgba(10,22,40,0.95);border-top:2px solid var(--red);padding:3rem;text-align:center;}
+.footer-logo{font-family:var(--font-hero);font-size:3rem;color:var(--yellow);text-shadow:3px 3px 0 var(--red);letter-spacing:3px;}
+.footer-tagline{font-family:var(--font-title);color:var(--red);letter-spacing:4px;font-size:0.8rem;margin-bottom:1.5rem;}
+.footer-links{display:flex;justify-content:center;gap:2rem;list-style:none;margin-bottom:1.5rem;}
+.footer-links a{color:var(--gray);text-decoration:none;font-family:var(--font-title);font-size:0.8rem;letter-spacing:1px;transition:color 0.2s;}
+.footer-links a:hover{color:var(--yellow);}
+.footer-copy{color:rgba(255,255,255,0.3);font-size:0.78rem;}
+
+/* TOAST */
+.toast{position:fixed;bottom:2rem;right:2rem;background:var(--blue);border:2px solid var(--yellow);border-radius:10px;padding:1rem 1.5rem;z-index:999;transform:translateX(200%);transition:transform 0.4s ease;display:flex;align-items:center;gap:10px;}
+.toast.show{transform:translateX(0);}
+.toast-icon{font-size:1.5rem;}
+.toast-text{font-family:var(--font-title);font-size:0.85rem;letter-spacing:1px;}
+.toast-text strong{display:block;color:var(--yellow);}
+
+/* UTILS */
+.page-title-section{text-align:center;margin-bottom:3rem;}
+.page-title-section h2{font-family:var(--font-hero);font-size:clamp(2rem,5vw,4rem);color:var(--yellow);letter-spacing:3px;text-shadow:3px 3px 0 var(--red);}
+.page-title-section p{color:var(--gray);margin-top:0.5rem;}
+@media(max-width:768px){
+  nav{padding:1rem 1.5rem;}
+  .nav-links{display:none;}
+  .hero-content{flex-direction:column;text-align:center;padding:5rem 1.5rem 2rem;}
+  .hero-carousel{height:320px;}
+  .carousel-ring{width:280px;height:280px;}
+  .carousel-prev{left:-40px;}
+  .carousel-next{right:-40px;}
+  .detail-grid,.cart-grid,.checkout-grid{grid-template-columns:1fr;}
+  section,.page{padding:5rem 1.5rem 3rem;}
+  #page-menu{padding:5rem 1.5rem 3rem;}
+  .form-row{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-dot" id="cursorDot"></div>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="loader-logo">🍔 HERO</div>
+  <div class="loader-sub">BURGER — Sabores do Universo</div>
+  <div class="loader-bar-wrap"><div class="loader-bar"></div></div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span class="toast-icon">🛒</span>
+  <div class="toast-text"><strong id="toastName"></strong>Adicionado ao pedido!</div>
+</div>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <div class="nav-logo" onclick="goPage('home')">🍔 HERO BURGER</div>
+  <ul class="nav-links">
+    <li><a href="#" onclick="goPage('home');return false;">Início</a></li>
+    <li><a href="#" onclick="goPage('menu');return false;">Cardápio</a></li>
+    <li><a href="#" onclick="return false;">Combos</a></li>
+    <li><a href="#" onclick="return false;">Sobre</a></li>
+  </ul>
+  <div class="nav-cart btn btn-outline" onclick="goPage('cart')" style="padding:6px 16px;font-size:0.8rem;">
+    🛒 CARRINHO
+    <span class="cart-badge" id="cartBadge">0</span>
+  </div>
+</nav>
+
+<!-- STRIP -->
+<div class="menu-strip" style="margin-top:66px;">
+  <div class="strip-inner">
+    <span class="strip-item">🕷️ SPIDER SMASH</span>
+    <span class="strip-item">🛡️ CAP'S SHIELD</span>
+    <span class="strip-item">🦇 DARK KNIGHT</span>
+    <span class="strip-item">⚡ FLASH BURGER</span>
+    <span class="strip-item">💚 HULK SMASH</span>
+    <span class="strip-item">⚡ THOR THUNDER</span>
+    <span class="strip-item">🦅 WONDER SMASH</span>
+    <span class="strip-item">🔴 SUPER HERO</span>
+    <span class="strip-item">🕷️ SPIDER SMASH</span>
+    <span class="strip-item">🛡️ CAP'S SHIELD</span>
+    <span class="strip-item">🦇 DARK KNIGHT</span>
+    <span class="strip-item">⚡ FLASH BURGER</span>
+    <span class="strip-item">💚 HULK SMASH</span>
+    <span class="strip-item">⚡ THOR THUNDER</span>
+    <span class="strip-item">🦅 WONDER SMASH</span>
+    <span class="strip-item">🔴 SUPER HERO</span>
+  </div>
+</div>
+
+<!-- ========= PAGE HOME ========= -->
+<div id="page-home" class="page active">
+  <div class="hero-bg"></div>
+  <div class="hero-particles" id="particles"></div>
+
+  <div class="hero-content">
+    <div class="hero-text">
+      <div class="hero-badge">⚡ Aberto agora — Maceió, AL</div>
+      <h1 class="hero-title">
+        <span class="line1">HERO</span>
+        <span class="line2">BURGER</span>
+      </h1>
+      <p class="hero-desc">
+        Hambúrgueres épicos inspirados nos maiores heróis do universo. Cada mordida é uma aventura. Cada ingrediente, um poder.
+      </p>
+      <div class="hero-btns">
+        <button class="btn btn-primary" onclick="goPage('menu')">🍔 VER CARDÁPIO</button>
+        <button class="btn btn-outline" onclick="goPage('cart')">🛒 MEU PEDIDO</button>
+      </div>
+    </div>
+
+    <div class="hero-carousel">
+      <div class="carousel-prev" onclick="prevSlide()">‹</div>
+      <div class="carousel-ring">
+        <div class="carousel-glow"></div>
+        <div class="carousel-main">
+          <img id="carouselImg" src="" alt="Burger Hero">
+        </div>
+        <div class="carousel-badge">
+          <div class="carousel-badge-name" id="carouselName">SPIDER SMASH</div>
+          <div class="carousel-badge-price" id="carouselPrice">R$ 38,90</div>
+        </div>
+        <div class="carousel-dots" id="carouselDots"></div>
+      </div>
+      <div class="carousel-next" onclick="nextSlide()">›</div>
+    </div>
+  </div>
+
+  <div class="scroll-hint">
+    <span>ROLAR PARA BAIXO</span>
+    <div class="scroll-arrow"></div>
+  </div>
+
+  <!-- FEATURES -->
+  <div style="background:var(--blue);padding:4rem 3rem;margin-top:-2px;">
+    <div style="max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:2rem;text-align:center;">
+      <div>
+        <div style="font-size:2.5rem;margin-bottom:0.5rem;">🔥</div>
+        <div style="font-family:var(--font-hero);font-size:1.3rem;color:var(--yellow);letter-spacing:1px;">GRELHADO NA BRASA</div>
+        <div style="color:var(--gray);font-size:0.85rem;margin-top:0.25rem;">Chama viva, sabor épico</div>
+      </div>
+      <div>
+        <div style="font-size:2.5rem;margin-bottom:0.5rem;">🧀</div>
+        <div style="font-family:var(--font-hero);font-size:1.3rem;color:var(--yellow);letter-spacing:1px;">QUEIJO IMPORTADO</div>
+        <div style="color:var(--gray);font-size:0.85rem;margin-top:0.25rem;">Cheddar, Gouda e Emmental</div>
+      </div>
+      <div>
+        <div style="font-size:2.5rem;margin-bottom:0.5rem;">🥩</div>
+        <div style="font-family:var(--font-hero);font-size:1.3rem;color:var(--yellow);letter-spacing:1px;">200G DE CARNE</div>
+        <div style="color:var(--gray);font-size:0.85rem;margin-top:0.25rem;">Blend artesanal premium</div>
+      </div>
+      <div>
+        <div style="font-size:2.5rem;margin-bottom:0.5rem;">⚡</div>
+        <div style="font-family:var(--font-hero);font-size:1.3rem;color:var(--yellow);letter-spacing:1px;">ENTREGA 40 MIN</div>
+        <div style="color:var(--gray);font-size:0.85rem;margin-top:0.25rem;">Mais rápido que o Flash</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOP BURGERS PREVIEW -->
+  <div style="padding:4rem 3rem;max-width:1100px;margin:0 auto;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;">
+      <div>
+        <div style="font-family:var(--font-title);font-size:0.75rem;letter-spacing:3px;text-transform:uppercase;color:var(--red);margin-bottom:0.25rem;">OS FAVORITOS</div>
+        <div style="font-family:var(--font-hero);font-size:2.5rem;color:var(--yellow);letter-spacing:2px;text-shadow:2px 2px 0 var(--red);">MAIS PEDIDOS</div>
+      </div>
+      <button class="btn btn-outline" onclick="goPage('menu')">VER TODOS →</button>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1.5rem;" id="topBurgersPreview"></div>
+  </div>
+
+  <footer>
+    <div class="footer-logo">🍔 HERO BURGER</div>
+    <div class="footer-tagline">SABORES DO UNIVERSO</div>
+    <ul class="footer-links">
+      <li><a href="#">Cardápio</a></li>
+      <li><a href="#">Combos</a></li>
+      <li><a href="#">Fale Conosco</a></li>
+      <li><a href="#">Instagram</a></li>
+    </ul>
+    <div class="footer-copy">© 2025 Hero Burger — Todos os direitos reservados · Maceió, AL</div>
+  </footer>
+</div>
+
+<!-- ========= PAGE MENU ========= -->
+<div id="page-menu" class="page" style="display:none;">
+  <div style="padding:6rem 3rem 4rem;background:var(--darkblue);">
+    <div class="menu-header">
+      <h2>ESCOLHA SEU HERÓI</h2>
+      <p>Cada burger é uma missão. Qual herói vai te salvar hoje?</p>
+    </div>
+    <div class="hero-filter">
+      <button class="filter-btn all active" onclick="filterBurgers('all',this)">🌟 Todos</button>
+      <button class="filter-btn marvel" onclick="filterBurgers('marvel',this)">⚡ Marvel</button>
+      <button class="filter-btn dc" onclick="filterBurgers('dc',this)">🦇 DC</button>
+    </div>
+    <div class="burgers-grid" id="burgersGrid"></div>
+  </div>
+  <footer>
+    <div class="footer-logo">🍔 HERO BURGER</div>
+    <div class="footer-tagline">SABORES DO UNIVERSO</div>
+    <div class="footer-copy">© 2025 Hero Burger · Maceió, AL</div>
+  </footer>
+</div>
+
+<!-- ========= PAGE DETAIL ========= -->
+<div id="page-detail" class="page" style="display:none;">
+  <div style="padding:6rem 3rem 4rem;">
+    <button class="detail-back" onclick="goPage('menu')">← VOLTAR AO CARDÁPIO</button>
+    <div class="detail-grid" id="detailContent"></div>
+  </div>
+</div>
+
+<!-- ========= PAGE CART ========= -->
+<div id="page-cart" class="page" style="display:none;">
+  <div style="padding:6rem 3rem 4rem;">
+    <div class="page-title-section">
+      <h2>SEU PEDIDO</h2>
+      <p>Revise antes de finalizar a missão</p>
+    </div>
+    <div id="cartContent"></div>
+  </div>
+</div>
+
+<!-- ========= PAGE CHECKOUT ========= -->
+<div id="page-checkout" class="page" style="display:none;">
+  <div style="padding:6rem 3rem 4rem;">
+    <div class="checkout-grid">
+      <div class="checkout-form">
+        <h2>FINALIZAR PEDIDO</h2>
+        <div class="form-section">
+          <h3>Identificação</h3>
+          <div class="form-row">
+            <div class="form-group"><label>Nome</label><input type="text" placeholder="Seu nome de herói" id="clientName"></div>
+            <div class="form-group"><label>WhatsApp</label><input type="tel" placeholder="(82) 99999-9999" id="clientPhone"></div>
+          </div>
+        </div>
+        <div class="form-section">
+          <h3>Entrega</h3>
+          <div class="form-row single">
+            <div class="form-group"><label>Endereço</label><input type="text" placeholder="Rua, número" id="clientAddr"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Bairro</label><input type="text" placeholder="Bairro" id="clientNeigh"></div>
+            <div class="form-group"><label>Complemento</label><input type="text" placeholder="Apto, bloco..." id="clientComp"></div>
+          </div>
+        </div>
+        <div class="form-section">
+          <h3>Pagamento</h3>
+          <div class="payment-methods">
+            <div class="pay-method active" onclick="selectPay(this)">💳 Cartão</div>
+            <div class="pay-method" onclick="selectPay(this)">💵 Dinheiro</div>
+            <div class="pay-method" onclick="selectPay(this)">📱 Pix</div>
+          </div>
+          <div id="cardFields">
+            <div class="form-row single"><div class="form-group"><label>Número do Cartão</label><input type="text" placeholder="0000 0000 0000 0000" id="cardNum" maxlength="19"></div></div>
+            <div class="form-row">
+              <div class="form-group"><label>Validade</label><input type="text" placeholder="MM/AA" id="cardExp" maxlength="5"></div>
+              <div class="form-group"><label>CVV</label><input type="text" placeholder="000" id="cardCvv" maxlength="3"></div>
+            </div>
+          </div>
+        </div>
+        <button class="btn btn-primary" style="width:100%;justify-content:center;font-size:1rem;padding:1.1rem;" onclick="placeOrder()">⚡ CONFIRMAR PEDIDO</button>
+      </div>
+      <div class="checkout-summary-card">
+        <h3>RESUMO</h3>
+        <div class="checkout-items" id="checkoutItems"></div>
+        <div class="summary-row"><span>Subtotal</span><span id="checkSubtotal">R$ 0,00</span></div>
+        <div class="summary-row"><span>Entrega</span><span style="color:var(--accent2);">R$ 5,00</span></div>
+        <div class="summary-row total"><span>TOTAL</span><span id="checkTotal" style="color:var(--yellow);">R$ 0,00</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========= PAGE SUCCESS ========= -->
+<div id="page-success" class="page" style="display:none;">
+  <div style="padding:8rem 3rem;max-width:700px;margin:0 auto;text-align:center;">
+    <div class="success-icon">🎉</div>
+    <div class="success-title">PEDIDO CONFIRMADO!</div>
+    <p class="success-desc">Seu pedido foi recebido! Nossos heróis culinários já estão preparando sua refeição épica. Tempo estimado: <strong style="color:var(--yellow);">35–45 minutos</strong>.</p>
+    <div class="order-code" id="orderCode">#HB0001</div>
+    <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+      <button class="btn btn-primary" onclick="goPage('home');resetOrder()">🏠 VOLTAR AO INÍCIO</button>
+      <button class="btn btn-outline" onclick="goPage('menu')">🍔 PEDIR MAIS</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== DATA =====
+const burgers = [
+  {
+    id:1, universe:'marvel', hero:'Homem-Aranha', badge:'badge-spidey', emoji:'🕷️',
+    name:'SPIDER SMASH',
+    desc:'Pão brioche vermelho com gergelim dourado, smash burger 200g, queijo pepper jack, molho teia (mayo picante + sriracha), rúcula selvagem, tomate heirloom e cebola roxa crocante.',
+    price:38.90, img:'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&q=80',
+    ingredients:['Pão Brioche Vermelho','Smash 200g','Pepper Jack','Molho Teia','Rúcula','Tomate Heirloom','Cebola Roxa'],
+    powers:{Força:75,Velocidade:90,Sabor:95,Picância:80}
+  },
+  {
+    id:2, universe:'marvel', hero:'Capitão América', badge:'badge-cap', emoji:'🛡️',
+    name:"CAP'S SHIELD",
+    desc:'Pão artesanal azul, duplo smash burger 180g cada, queijo cheddar americano aged, alface americana, picles artesanal, molho patriota (BBQ + mostarda dijon) e bacon crocante.',
+    price:45.90, img:'https://images.unsplash.com/photo-1553979459-d2229ba7433b?w=600&q=80',
+    ingredients:['Pão Artesanal','Duplo Smash 360g','Cheddar Aged','Picles Artesanal','Alface','Bacon','Molho Patriota'],
+    powers:{Força:95,Velocidade:70,Sabor:90,Picância:40}
+  },
+  {
+    id:3, universe:'dc', hero:'Batman', badge:'badge-bats', emoji:'🦇',
+    name:'DARK KNIGHT',
+    desc:'Pão preto de carvão ativado, smash burger blend noturno 200g, queijo gouda defumado, cogumelos salteados, cebola caramelizada, molho morcego (BBQ dark + chipotle) e fritas de batata-doce.',
+    price:42.90, img:'https://images.unsplash.com/photo-1596956470007-2bf6095e7e16?w=600&q=80',
+    ingredients:['Pão Preto Carvão','Blend Noturno 200g','Gouda Defumado','Cogumelos','Cebola Caramelizada','Molho Morcego'],
+    powers:{Força:85,Velocidade:80,Sabor:92,Picância:60}
+  },
+  {
+    id:4, universe:'dc', hero:'Superman', badge:'badge-supes', emoji:'🦸',
+    name:'SUPER HERO',
+    desc:'Pão brioche clássico, triplo smash burger 270g, queijo emmental suíço, alface americana, tomate cereja, bacon canadense, ovo caipira grelhado e molho de aço (aioli de trufa).',
+    price:52.90, img:'https://images.unsplash.com/photo-1550547660-d9450f859349?w=600&q=80',
+    ingredients:['Pão Brioche','Triplo Smash 270g','Emmental Suíço','Ovo Caipira','Bacon Canadense','Aioli de Trufa'],
+    powers:{Força:100,Velocidade:85,Sabor:88,Picância:30}
+  },
+  {
+    id:5, universe:'marvel', hero:'Hulk', badge:'badge-hulk', emoji:'💚',
+    name:'HULK SMASH',
+    desc:'Pão verde de espinafre, mega smash burger 300g (esmassado na brasa!), queijo jalapeño, guacamole artesanal, pimentas em conserva, molho verde explosivo e chips de jalapeño frito.',
+    price:47.90, img:'https://images.unsplash.com/photo-1565299507177-b0ac66763828?w=600&q=80',
+    ingredients:['Pão de Espinafre','Mega Smash 300g','Queijo Jalapeño','Guacamole','Pimentas','Molho Verde','Chips Jalapeño'],
+    powers:{Força:100,Velocidade:50,Sabor:85,Picância:100}
+  },
+  {
+    id:6, universe:'marvel', hero:'Thor', badge:'badge-thor', emoji:'⚡',
+    name:'THOR THUNDER',
+    desc:'Pão pretzel tostado, smash burger 200g com maionese de trufas, queijo azul dinamarquês, cebola crispy, cogumelos portobello, rúcula e geleia de pimenta como um relâmpago de Asgard.',
+    price:49.90, img:'https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=600&q=80',
+    ingredients:['Pão Pretzel','Smash 200g','Queijo Azul','Cogumelo Portobello','Cebola Crispy','Geleia de Pimenta'],
+    powers:{Força:95,Velocidade:88,Sabor:93,Picância:70}
+  },
+  {
+    id:7, universe:'dc', hero:'Flash', badge:'badge-flash', emoji:'⚡',
+    name:'FLASH BURGER',
+    desc:'Pão laranja com gergelim, duplo smash burger 180g, queijo americano derretido duplo, picles crocante, cebola branca, ketchup e mostarda — rápido de comer, lento de esquecer.',
+    price:36.90, img:'https://images.unsplash.com/photo-1572802419224-296b0aeee0d9?w=600&q=80',
+    ingredients:['Pão Laranja','Duplo Smash 180g','Cheddar Duplo','Picles','Cebola','Ketchup','Mostarda'],
+    powers:{Força:70,Velocidade:100,Sabor:80,Picância:35}
+  },
+  {
+    id:8, universe:'dc', hero:'Mulher-Maravilha', badge:'badge-wonder', emoji:'🦅',
+    name:'WONDER SMASH',
+    desc:'Pão de beterraba rosa, smash burger de cordeiro 200g, queijo feta, pepino persa, tapenade de azeitonas, hortelã fresca, molho tzatziki e tomate seco — poder divino em cada mordida.',
+    price:44.90, img:'https://images.unsplash.com/photo-1476224203421-9ac39bcb3327?w=600&q=80',
+    ingredients:['Pão de Beterraba','Cordeiro Smash 200g','Queijo Feta','Pepino','Tzatziki','Tapenade','Hortelã'],
+    powers:{Força:90,Velocidade:88,Sabor:97,Picância:25}
+  }
+];
+
+// STATE
+let cart = [];
+let currentSlide = 0;
+let carouselInterval;
+let currentPage = 'home';
+
+// ===== CAROUSEL =====
+function buildCarousel(){
+  const img = document.getElementById('carouselImg');
+  const name = document.getElementById('carouselName');
+  const price = document.getElementById('carouselPrice');
+  const dots = document.getElementById('carouselDots');
+  dots.innerHTML = burgers.map((b,i)=>`<div class="dot ${i===0?'active':''}" onclick="goSlide(${i})"></div>`).join('');
+  updateCarousel();
+  carouselInterval = setInterval(nextSlide, 3500);
+}
+
+function updateCarousel(){
+  const b = burgers[currentSlide];
+  const img = document.getElementById('carouselImg');
+  img.style.opacity='0';
+  setTimeout(()=>{
+    img.src = b.img;
+    img.style.opacity='1';
+  },300);
+  document.getElementById('carouselName').textContent = b.name;
+  document.getElementById('carouselPrice').textContent = `R$ ${b.price.toFixed(2).replace('.',',')}`;
+  document.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active',i===currentSlide));
+}
+
+function nextSlide(){currentSlide=(currentSlide+1)%burgers.length;updateCarousel();}
+function prevSlide(){currentSlide=(currentSlide-1+burgers.length)%burgers.length;updateCarousel();}
+function goSlide(i){clearInterval(carouselInterval);currentSlide=i;updateCarousel();carouselInterval=setInterval(nextSlide,3500);}
+
+// ===== PARTICLES =====
+function buildParticles(){
+  const container = document.getElementById('particles');
+  for(let i=0;i<30;i++){
+    const p = document.createElement('div');
+    p.className='particle';
+    p.style.cssText=`left:${Math.random()*100}%;animation-duration:${8+Math.random()*12}s;animation-delay:${Math.random()*10}s;width:${Math.random()*4+2}px;height:${Math.random()*4+2}px;`;
+    container.appendChild(p);
+  }
+}
+
+// ===== RENDER BURGERS =====
+function renderBurgers(filter='all'){
+  const grid = document.getElementById('burgersGrid');
+  const filtered = filter==='all' ? burgers : burgers.filter(b=>b.universe===filter);
+  grid.innerHTML = filtered.map(b=>`
+    <div class="burger-card" data-universe="${b.universe}" style="animation:fadeInCard 0.5s ease both;animation-delay:${filtered.indexOf(b)*0.08}s">
+      <div class="burger-card-img">
+        <img src="${b.img}" alt="${b.name}" loading="lazy">
+        <span class="burger-hero-badge ${b.badge}">${b.emoji} ${b.universe.toUpperCase()}</span>
+        <div class="hover-overlay">
+          <button class="hover-btn" onclick="openDetail(${b.id})">VER DETALHES</button>
+        </div>
+      </div>
+      <div class="burger-card-body">
+        <div class="burger-hero-name">${b.name}</div>
+        <div class="burger-desc">${b.desc.substring(0,100)}...</div>
+        <div class="burger-footer">
+          <div class="burger-price"><small>R$</small> ${b.price.toFixed(2).replace('.',',')}</div>
+          <button class="add-btn" onclick="addToCart(${b.id},event)">+ PEDIR</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+  // inject keyframe if missing
+  if(!document.getElementById('fadeInCardKF')){
+    const s=document.createElement('style');s.id='fadeInCardKF';
+    s.textContent='@keyframes fadeInCard{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}';
+    document.head.appendChild(s);
+  }
+}
+
+function filterBurgers(filter, btn){
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderBurgers(filter);
+}
+
+// ===== TOP PREVIEW =====
+function renderTopPreview(){
+  const el = document.getElementById('topBurgersPreview');
+  if(!el) return;
+  const top = burgers.slice(0,4);
+  el.innerHTML = top.map(b=>`
+    <div onclick="goPage('menu');setTimeout(()=>openDetail(${b.id}),100)" style="cursor:pointer;background:var(--blue);border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,0.06);transition:all 0.3s;" onmouseenter="this.style.transform='translateY(-6px)';this.style.borderColor='var(--yellow)'" onmouseleave="this.style.transform='';this.style.borderColor='rgba(255,255,255,0.06)'">
+      <img src="${b.img}" alt="${b.name}" style="width:100%;height:140px;object-fit:cover;">
+      <div style="padding:0.75rem;">
+        <div style="font-family:var(--font-hero);color:var(--yellow);font-size:1rem;letter-spacing:1px;">${b.name}</div>
+        <div style="font-family:var(--font-title);color:var(--red);font-size:0.85rem;font-weight:700;margin-top:4px;">R$ ${b.price.toFixed(2).replace('.',',')}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ===== DETAIL =====
+function openDetail(id){
+  const b = burgers.find(x=>x.id===id);
+  if(!b) return;
+  const powerColors = {Força:'var(--red)',Velocidade:'var(--yellow)',Sabor:'var(--accent2)',Picância:'#f4a261'};
+  const powerHTML = Object.entries(b.powers).map(([k,v])=>`
+    <div class="power-row">
+      <div class="power-label">${k}</div>
+      <div class="power-bar-bg"><div class="power-bar" style="width:${v}%;background:${powerColors[k]||'var(--yellow)'}"></div></div>
+      <div style="font-family:var(--font-title);font-size:0.78rem;color:var(--gray);width:32px;text-align:right;">${v}</div>
+    </div>
+  `).join('');
+
+  document.getElementById('detailContent').innerHTML=`
+    <div class="detail-img-wrap">
+      <img src="${b.img}" class="detail-img-main" alt="${b.name}">
+      <div class="detail-hero-emblem" style="background:var(--blue);">${b.emoji}</div>
+    </div>
+    <div class="detail-content">
+      <div class="detail-universe">${b.universe.toUpperCase()} · ${b.hero}</div>
+      <div class="detail-name">${b.name}</div>
+      <p class="detail-desc">${b.desc}</p>
+      <div class="detail-ingredients">
+        <h4>Ingredientes</h4>
+        <div class="ingredient-list">${b.ingredients.map(i=>`<span class="ingredient">${i}</span>`).join('')}</div>
+      </div>
+      <div class="power-meter">
+        <h4>Poderes do Herói</h4>
+        ${powerHTML}
+      </div>
+      <div class="detail-price-row">
+        <div class="detail-price">R$ ${b.price.toFixed(2).replace('.',',')}</div>
+        <div class="detail-qty">
+          <button class="qty-btn" onclick="changeQty(-1)">−</button>
+          <span class="qty-val" id="detailQty">1</span>
+          <button class="qty-btn" onclick="changeQty(1)">+</button>
+        </div>
+      </div>
+      <div class="detail-actions">
+        <button class="btn btn-primary" onclick="addToCartFromDetail(${b.id})" style="flex:1;justify-content:center;">🛒 ADICIONAR AO PEDIDO</button>
+        <button class="btn btn-outline" onclick="goPage('cart')" style="padding:0.9rem 1.2rem;">VER CARRINHO</button>
+      </div>
+    </div>
+  `;
+  goPage('detail');
+}
+
+let detailQty = 1;
+function changeQty(d){
+  detailQty = Math.max(1, detailQty+d);
+  document.getElementById('detailQty').textContent = detailQty;
+}
+
+function addToCartFromDetail(id){
+  const qty = detailQty || 1;
+  for(let i=0;i<qty;i++) addToCart(id);
+  detailQty = 1;
+  goPage('cart');
+}
+
+// ===== CART =====
+function addToCart(id, e){
+  if(e) e.stopPropagation();
+  const b = burgers.find(x=>x.id===id);
+  const existing = cart.find(c=>c.id===id);
+  if(existing) existing.qty++;
+  else cart.push({...b, qty:1});
+  updateCartBadge();
+  showToast(b.name);
+}
+
+function updateCartBadge(){
+  const total = cart.reduce((s,c)=>s+c.qty,0);
+  document.getElementById('cartBadge').textContent = total;
+}
+
+function showToast(name){
+  document.getElementById('toastName').textContent = name;
+  const t = document.getElementById('toast');
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+
+function renderCart(){
+  const el = document.getElementById('cartContent');
+  if(cart.length===0){
+    el.innerHTML=`
+      <div class="empty-cart">
+        <span class="empty-cart-emoji">🍔</span>
+        <h3>Seu carrinho está vazio</h3>
+        <p style="color:var(--gray);margin-bottom:1.5rem;">Escolha seu herói favorito e monte seu pedido épico!</p>
+        <button class="btn btn-primary" onclick="goPage('menu')">VER CARDÁPIO</button>
+      </div>`;
+    return;
+  }
+  const subtotal = cart.reduce((s,c)=>s+c.price*c.qty,0);
+  const delivery = 5;
+  el.innerHTML=`
+    <div class="cart-grid">
+      <div class="cart-items-list">
+        ${cart.map((c,i)=>`
+          <div class="cart-item" style="animation-delay:${i*0.05}s">
+            <img src="${c.img}" class="cart-item-img" alt="${c.name}">
+            <div class="cart-item-info">
+              <div class="cart-item-name">${c.name}</div>
+              <div class="cart-item-price">R$ ${c.price.toFixed(2).replace('.',',')} cada</div>
+              <div class="cart-item-qty">
+                <div style="display:flex;align-items:center;gap:8px;background:var(--darkblue);border-radius:6px;padding:4px 10px;">
+                  <button class="qty-btn" onclick="cartQty(${c.id},-1)" style="font-size:1rem;">−</button>
+                  <span style="font-family:var(--font-title);font-weight:700;min-width:20px;text-align:center;">${c.qty}</span>
+                  <button class="qty-btn" onclick="cartQty(${c.id},1)" style="font-size:1rem;">+</button>
+                </div>
+                <button class="cart-item-remove" onclick="removeFromCart(${c.id})">✕ REMOVER</button>
+              </div>
+            </div>
+            <div style="font-family:var(--font-hero);font-size:1.4rem;color:var(--yellow);flex-shrink:0;">R$ ${(c.price*c.qty).toFixed(2).replace('.',',')}</div>
+          </div>
+        `).join('')}
+      </div>
+      <div class="cart-summary">
+        <h3>RESUMO</h3>
+        <div class="summary-row"><span>Subtotal (${cart.reduce((s,c)=>s+c.qty,0)} itens)</span><span>R$ ${subtotal.toFixed(2).replace('.',',')}</span></div>
+        <div class="summary-row"><span>Entrega</span><span style="color:var(--accent2);">R$ ${delivery.toFixed(2).replace('.',',')}</span></div>
+        <div class="coupon-row">
+          <input class="coupon-input" placeholder="Código de herói..." id="couponInput">
+          <button class="coupon-btn" onclick="applyCoupon()">USAR</button>
+        </div>
+        <div class="summary-row total"><span>TOTAL</span><span style="color:var(--yellow);">R$ ${(subtotal+delivery).toFixed(2).replace('.',',')}</span></div>
+        <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:1.5rem;" onclick="goPage('checkout')">⚡ FINALIZAR PEDIDO</button>
+        <button class="btn btn-outline" style="width:100%;justify-content:center;margin-top:0.75rem;" onclick="goPage('menu')">← CONTINUAR COMPRANDO</button>
+      </div>
+    </div>`;
+}
+
+function cartQty(id,d){
+  const item = cart.find(c=>c.id===id);
+  if(!item) return;
+  item.qty += d;
+  if(item.qty <= 0) cart = cart.filter(c=>c.id!==id);
+  updateCartBadge();
+  renderCart();
+}
+
+function removeFromCart(id){
+  cart = cart.filter(c=>c.id!==id);
+  updateCartBadge();
+  renderCart();
+}
+
+function applyCoupon(){
+  const code = document.getElementById('couponInput').value.trim().toUpperCase();
+  if(code==='HERO10') showToast('Cupom HERO10 aplicado!');
+  else alert('Cupom inválido. Tente HERO10!');
+}
+
+// ===== CHECKOUT =====
+function renderCheckout(){
+  const subtotal = cart.reduce((s,c)=>s+c.price*c.qty,0);
+  const delivery = 5;
+  const total = subtotal+delivery;
+  document.getElementById('checkoutItems').innerHTML = cart.map(c=>`
+    <div class="checkout-item"><span>${c.qty}x ${c.name}</span><span>R$ ${(c.price*c.qty).toFixed(2).replace('.',',')}</span></div>
+  `).join('');
+  document.getElementById('checkSubtotal').textContent = `R$ ${subtotal.toFixed(2).replace('.',',')}`;
+  document.getElementById('checkTotal').textContent = `R$ ${total.toFixed(2).replace('.',',')}`;
+
+  // card formatting
+  const cardNum = document.getElementById('cardNum');
+  if(cardNum && !cardNum._formatted){
+    cardNum._formatted=true;
+    cardNum.addEventListener('input',function(){
+      let v=this.value.replace(/\D/g,'').substring(0,16);
+      this.value=v.match(/.{1,4}/g)?.join(' ')||v;
+    });
+  }
+  const cardExp = document.getElementById('cardExp');
+  if(cardExp && !cardExp._formatted){
+    cardExp._formatted=true;
+    cardExp.addEventListener('input',function(){
+      let v=this.value.replace(/\D/g,'').substring(0,4);
+      if(v.length>=2)v=v.substring(0,2)+'/'+v.substring(2);
+      this.value=v;
+    });
+  }
+}
+
+function selectPay(el){
+  document.querySelectorAll('.pay-method').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  const txt = el.textContent.toLowerCase();
+  const cardFields = document.getElementById('cardFields');
+  if(cardFields) cardFields.style.display = txt.includes('cartão') ? 'block' : 'none';
+}
+
+function placeOrder(){
+  const name = document.getElementById('clientName')?.value?.trim();
+  const phone = document.getElementById('clientPhone')?.value?.trim();
+  const addr = document.getElementById('clientAddr')?.value?.trim();
+  if(!name||!phone||!addr){alert('Por favor, preencha nome, telefone e endereço!');return;}
+  goPage('success');
+  launchConfetti();
+  const code = '#HB'+Math.floor(1000+Math.random()*9000);
+  document.getElementById('orderCode').textContent = code;
+}
+
+// ===== CONFETTI =====
+function launchConfetti(){
+  const colors=['#ffd60a','#e63946','#1d7ed8','#06d6a0','#f4a261'];
+  for(let i=0;i<80;i++){
+    const c=document.createElement('div');
+    c.className='confetti';
+    const size=Math.random()*10+6;
+    c.style.cssText=`
+      left:${Math.random()*100}vw;
+      top:-20px;
+      width:${size}px;height:${size}px;
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      border-radius:${Math.random()>0.5?'50%':'2px'};
+      animation:confettiFall ${2+Math.random()*3}s linear ${Math.random()*1.5}s forwards;
+    `;
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),5000);
+  }
+  if(!document.getElementById('confettiKF')){
+    const s=document.createElement('style');s.id='confettiKF';
+    s.textContent='@keyframes confettiFall{0%{transform:translateY(0) rotate(0deg);opacity:1;}100%{transform:translateY(105vh) rotate(720deg);opacity:0;}}';
+    document.head.appendChild(s);
+  }
+}
+
+// ===== RESET =====
+function resetOrder(){cart=[];updateCartBadge();}
+
+// ===== PAGES =====
+function goPage(page){
+  document.querySelectorAll('.page').forEach(p=>p.style.display='none');
+  const target = document.getElementById('page-'+page);
+  if(target){
+    target.style.display='block';
+    window.scrollTo({top:0,behavior:'smooth'});
+    currentPage = page;
+    if(page==='menu') renderBurgers();
+    if(page==='cart') renderCart();
+    if(page==='checkout') renderCheckout();
+    if(page==='home'){renderTopPreview();buildCarousel();}
+  }
+}
+
+// ===== CURSOR =====
+const cursor=document.getElementById('cursor');
+const dot=document.getElementById('cursorDot');
+let mx=0,my=0,cx=0,cy=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;dot.style.left=mx+'px';dot.style.top=my+'px';});
+function animCursor(){
+  cx+=(mx-cx)*0.15;cy+=(my-cy)*0.15;
+  cursor.style.left=cx+'px';cursor.style.top=cy+'px';
+  requestAnimationFrame(animCursor);
+}
+animCursor();
+document.querySelectorAll('button,a,.burger-card,.project-card').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cursor.style.transform='translate(-50%,-50%) scale(2)';cursor.style.borderColor='var(--red)';});
+  el.addEventListener('mouseleave',()=>{cursor.style.transform='translate(-50%,-50%) scale(1)';cursor.style.borderColor='var(--yellow)';});
+});
+
+// ===== INIT =====
+window.addEventListener('load',()=>{
+  setTimeout(()=>{
+    document.getElementById('loader').classList.add('hidden');
+    buildParticles();
+    buildCarousel();
+    renderTopPreview();
+  },2000);
+});
+</script>
+</body>
+</html>
